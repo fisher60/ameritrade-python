@@ -1,10 +1,11 @@
-from urllib.parse import urlencode
+import dotenv
+from urllib.parse import urlencode, urlparse
 
-from ameritrade.constants import AUTH_URL
+from .settings import AUTH_URL
 
 
 class Authenticate:
-    def __init__(self, redirect_uri: str = None, consumer_key: int = None):
+    def __init__(self, redirect_uri: str = None, consumer_key: str = None):
         self.redirect_uri = redirect_uri
         self.consumer_key = consumer_key
 
@@ -17,5 +18,17 @@ class Authenticate:
             }
         return f"{AUTH_URL}?{urlencode(params)}"
 
+    @staticmethod
+    def parse_code(url: str):
+        return urlparse(url)
+
     def manual_connect(self):
-        pass
+        if self.redirect_uri is None:
+            self.redirect_uri = input("Enter your Redirect URI/Callback URL here\n")
+        if self.consumer_key is None:
+            self.consumer_key = input("Enter your Consumer Key here\n")
+
+        custom_auth_url = self.auth_url
+
+
+test_callback_url = None
