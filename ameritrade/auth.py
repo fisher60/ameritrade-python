@@ -14,7 +14,7 @@ class Token:
         self.expiration = expiration
 
     def __str__(self) -> str:
-        return self.token
+        return f"{self.token_type}: {self.token}"
 
 
 class Authenticate:
@@ -64,11 +64,29 @@ class Authenticate:
         }
         return await self.auth_request(data=data)
 
-    async def auth_request(self, data) -> Tuple[Token, Token]:
+    async def get_new_refresh_token(self, old_refresh_token: Optional[str]) -> Tuple[Token, Token]:
+        """Gets new refresh and access tokens from an existing refresh token."""
+
+        data = {
+            "grant_type": "refresh_token",
+            "refresh_token": old_refresh_token,
+            "access_type": "offline",
+            "client_id": self.consumer_key,
+        }
+
+        return await self.auth_request(data=data)
+
+    async def auth_request(self, data: dict) -> Tuple[Token, Token]:
         """Sends the request for authentication given either the authorization code or a refresh token in data."""
         async with aiohttp.ClientSession() as session:
             async with session.post(OAUTH_URL, data=data) as response:
-                data_response = await response.json()
+                if response.status == 200:
+                    data_response = await response.json()
+                else:
+                    raise AttributeError(
+                        f"Auth POST request replied with a status of {response.status}. "
+                        f"If using a refresh token you may need to use the manual auth to get a new one."
+                    )
 
         self.access_token = Token(
             data_response.get("access_token"),
@@ -101,7 +119,7 @@ class Authenticate:
                                      "run the manual authorization")
 
     async def manual_auth(self) -> Tuple[Token, Token]:
-        """Guides the user through browser authentication for first-time setup"""
+        """Guides the user through browser authentication for first-time setup."""
         if self.redirect_uri is None:
             self.redirect_uri = input("Enter your Redirect URI/Callback URL here\n")
         if self.consumer_key is None:
