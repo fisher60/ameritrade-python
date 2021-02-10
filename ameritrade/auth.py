@@ -64,7 +64,7 @@ class Authenticate:
         }
         return await self.auth_request(data=data)
 
-    async def get_new_refresh_token(self, old_refresh_token: Optional[str]) -> Tuple[Token, Token]:
+    async def get_tokens_from_refresh(self, old_refresh_token: Optional[str]) -> Tuple[Token, Token]:
         """Gets new refresh and access tokens from an existing refresh token."""
 
         data = {
