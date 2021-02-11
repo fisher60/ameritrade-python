@@ -1,4 +1,5 @@
-import aiohttp
+from aiohttp import ClientSession
+from aiohttp.web import HTTPException
 
 from urllib.parse import unquote, urlencode, urlparse
 from typing import Optional, Tuple
@@ -17,7 +18,7 @@ class Token:
         return f"{self.token_type}: {self.token}"
 
 
-class Authenticate:
+class Auth:
     """Handles all API authentication."""
     def __init__(self, redirect_uri: str = None, consumer_key: str = None, refresh_token: Optional[str] = None) -> None:
         self.redirect_uri = redirect_uri
@@ -78,15 +79,12 @@ class Authenticate:
 
     async def auth_request(self, data: dict) -> Tuple[Token, Token]:
         """Sends the request for authentication given either the authorization code or a refresh token in data."""
-        async with aiohttp.ClientSession() as session:
+        async with ClientSession() as session:
             async with session.post(OAUTH_URL, data=data) as response:
-                if response.status == 200:
-                    data_response = await response.json()
-                else:
-                    raise AttributeError(
-                        f"Auth POST request replied with a status of {response.status}. "
-                        f"If using a refresh token you may need to use the manual auth to get a new one."
-                    )
+                data_response = await response.json()
+                if response.status != 200:
+                    print(data["grant_type"])
+                    raise HTTPException(reason=data_response["error"])
 
         self.access_token = Token(
             data_response.get("access_token"),
