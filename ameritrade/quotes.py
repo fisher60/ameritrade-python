@@ -2,7 +2,15 @@ from aiohttp import ClientSession
 from aiohttp.web import HTTPException
 
 from .auth import Auth
-from .settings import GET_QUOTES_URL
+from .settings import GET_QUOTES_URL, GET_QUOTE_URL
+
+
+async def get_data_response(response):
+    data_response = await response.json()
+    if response.status != 200:
+        raise HTTPException(reason=data_response["error"])
+
+    return data_response
 
 
 async def get_quotes(*symbols: str, auth_class: Auth) -> dict:
@@ -10,14 +18,18 @@ async def get_quotes(*symbols: str, auth_class: Auth) -> dict:
         "symbol": ",".join(symbols)
     }
     headers = {"Authorization": f"Bearer {auth_class.access_token.token}"}
-
     async with ClientSession(headers=headers) as session:
         async with session.get(url=GET_QUOTES_URL, params=params) as response:
-            data_response = await response.json()
-            if response.status != 200:
-                raise HTTPException(reason=data_response["error"])
+            return await get_data_response(response)
 
-        return data_response
+
+async def get_quote(symbol: str, auth_class: Auth) -> dict:
+    url = f"{GET_QUOTE_URL}{symbol}/quotes"
+    headers = {"Authorization": f"Bearer {auth_class.access_token.token}"}
+
+    async with ClientSession(headers=headers) as session:
+        async with session.get(url=url) as response:
+            return await get_data_response(response)
 
 
 class Quote:
@@ -69,3 +81,12 @@ class Quote:
         self.mark_percent_change_in_double = stock_data.get("markPercentChangeInDouble")
         self.regular_market_percent_change_in_double = stock_data.get("regularMarketPercentChangeInDouble")
         self.delayed = stock_data.get("delayed")
+
+    def __str__(self) -> str:
+        return self.symbol
+
+    def __float__(self) -> float:
+        return float(self.bid_price)
+
+    def __int__(self) -> int:
+        return int(self.bid_price)
