@@ -48,6 +48,14 @@ optional = false
 python-versions = "*"
 
 [[package]]
+name = "dataclass-factory"
+version = "2.10"
+description = "An utility class for creating instances of dataclasses"
+category = "main"
+optional = false
+python-versions = ">=3.6"
+
+[[package]]
 name = "idna"
 version = "3.1"
 description = "Internationalized Domain Names in Applications (IDNA)"
@@ -97,7 +105,7 @@ multidict = ">=4.0"
 [metadata]
 lock-version = "1.1"
 python-versions = "^3.8"
-content-hash = "75d89bf362ea0e7668d3a05f967e5cc0c20ac96779d4f3982b6733a89ff5a5b0"
+content-hash = "42de34f6dfbc67c366ec0029e9cdf16f7945093279b32f1226a15e327d7b865a"
 
 [metadata.files]
 aiohttp = [
@@ -150,6 +158,9 @@ attrs = [
 chardet = [
     {file = "chardet-3.0.4-py2.py3-none-any.whl", hash = "sha256:fc323ffcaeaed0e0a02bf4d117757b98aed530d9ed4531e3e15460124c106691"},
     {file = "chardet-3.0.4.tar.gz", hash = "sha256:84ab92ed1c4d4f16916e05906b6b75a6c0fb5db821cc65e70cbd64a3e2a5eaae"},
+]
+dataclass-factory = [
+    {file = "dataclass_factory-2.10.tar.gz", hash = "sha256:d2d9c2add00acd5c779a9c4d48af880286b9f46e0548d0517b21c949d14f6c78"},
 ]
 idna = [
     {file = "idna-3.1-py3-none-any.whl", hash = "sha256:5205d03e7bcbb919cc9c19885f9920d622ca52448306f2377daede5cf3faac16"},

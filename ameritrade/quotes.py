@@ -1,6 +1,9 @@
 from aiohttp import ClientSession
 from aiohttp.web import HTTPException
 
+from dataclasses import dataclass
+from dataclass_factory import Factory, Schema, NameStyle
+
 from .auth import Auth
 from .settings import GET_QUOTES_URL, GET_QUOTE_URL
 
@@ -32,61 +35,76 @@ async def get_quote(symbol: str, auth_class: Auth) -> dict:
             return await get_data_response(response)
 
 
-class Quote:
-    def __init__(self, stock_data: dict):
-        self.asset_type = stock_data.get("assetType")
-        self.asset_main_type = stock_data.get("assetMainType")
-        self.cusip = stock_data.get("cusip")
-        self.symbol = stock_data.get("symbol")
-        self.description = stock_data.get("description")
-        self.bid_price = stock_data.get("bidPrice")
-        self.bid_size = stock_data.get("bidSize")
-        self.bid_id = stock_data.get("bidId")
-        self.ask_price = stock_data.get("askPrice")
-        self.ask_size = stock_data.get("askSize")
-        self.ask_id = stock_data.get("askId")
-        self.last_price = stock_data.get("lastPrice")
-        self.last_size = stock_data.get("lastSize")
-        self.last_id = stock_data.get("lastId")
-        self.open_price = stock_data.get("openPrice")
-        self.high_price = stock_data.get("highPrice")
-        self.low_price = stock_data.get("lowPrice")
-        self.bid_tick = stock_data.get("bidTick")
-        self.close_price = stock_data.get("closePrice")
-        self.net_change = stock_data.get("netChange")
-        self.total_volume = stock_data.get("totalVolume")
-        self.quote_time_in_long = stock_data.get("quoteTimeInLong")
-        self.trade_time_in_long = stock_data.get("tradeTimeInLong")
-        self.mark = stock_data.get("mark")
-        self.exchange = stock_data.get("exchange")
-        self.exchange_name = stock_data.get("exchangeName")
-        self.marginable = stock_data.get("marginable")
-        self.shortable = stock_data.get("shortable")
-        self.volatility = stock_data.get("volatility")
-        self.digits = stock_data.get("digits")
-        self.fifty_two_week_high = stock_data.get("52WkHigh")
-        self.fifty_two_week_low = stock_data.get("52WkLow")
-        self.net_asset_value = stock_data.get("nAV")
-        self.pe_ratio = stock_data.get("peRatio")
-        self.div_amount = stock_data.get("divAmount")
-        self.div_yield = stock_data.get("divYield")
-        self.div_date = stock_data.get("divDate")
-        self.security_status = stock_data.get("securityStatus")
-        self.regular_market_last_price = stock_data.get("regularMarketLastPrice")
-        self.regular_market_last_size = stock_data.get("regularMarketLastSize")
-        self.regular_market_net_change = stock_data.get("regularMarketNetChange")
-        self.regular_market_trade_time_in_long = stock_data.get("regularMarketTradeTimeInLong")
-        self.net_percent_change_in_double = stock_data.get("netPercentChangeInDouble")
-        self.mark_change_in_double = stock_data.get("markChangeInDouble")
-        self.mark_percent_change_in_double = stock_data.get("markPercentChangeInDouble")
-        self.regular_market_percent_change_in_double = stock_data.get("regularMarketPercentChangeInDouble")
-        self.delayed = stock_data.get("delayed")
+class Stock:
+    _factory = Factory(default_schema=Schema(name_style=NameStyle.camel_lower))
+
+    def __init__(self, data):
+        clean_data = self.clean_data(data)
+        self.quote: Quote = self._factory.load(clean_data, Quote)
+
+    @staticmethod
+    def clean_data(data) -> dict:
+        data["fiftyTwoWeekHigh"] = data["52WkHigh"]
+        data["fiftyTwoWeekLow"] = data["52WkLow"]
+        data["netAssetValue"] = data["nAV"]
+        return data
 
     def __str__(self) -> str:
-        return self.symbol
+        return self.quote.symbol
 
     def __float__(self) -> float:
-        return float(self.bid_price)
+        return float(self.quote.bid_price)
 
     def __int__(self) -> int:
-        return int(self.bid_price)
+        return int(self.quote.bid_price)
+
+
+@dataclass
+class Quote:
+    asset_type: str
+    asset_main_type: str
+    cusip: str
+    symbol: str
+    description: str
+    bid_price: float
+    bid_size: float
+    bid_id: str
+    ask_price: float
+    ask_size: float
+    ask_id: str
+    last_price: float
+    last_size: float
+    last_id: str
+    open_price: float
+    high_price: float
+    low_price: float
+    bid_tick: str
+    close_price: float
+    net_change: float
+    total_volume: float
+    quote_time_in_long: float
+    trade_time_in_long: float
+    mark: float
+    exchange: str
+    exchange_name: str
+    marginable: bool
+    shortable: bool
+    volatility: float
+    digits: float
+    fifty_two_week_high: float
+    fifty_two_week_low: float
+    net_asset_value: float
+    pe_ratio: float
+    div_amount: float
+    div_yield: float
+    div_date: str
+    security_status: str
+    regular_market_last_price: float
+    regular_market_last_size: float
+    regular_market_net_change: float
+    regular_market_trade_time_in_long: float
+    net_percent_change_in_double: float
+    mark_change_in_double: float
+    mark_percent_change_in_double: float
+    regular_market_percent_change_in_double: float
+    delayed: bool
