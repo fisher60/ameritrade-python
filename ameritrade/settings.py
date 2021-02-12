@@ -7,3 +7,6 @@ OAUTH_URL = "https://api.tdameritrade.com/v1/oauth2/token"
 # Quote endpoints
 GET_QUOTES_URL = "https://api.tdameritrade.com/v1/marketdata/quotes"
 GET_QUOTE_URL = "https://api.tdameritrade.com/v1/marketdata/"
+
+# History endpoint
+GET_PRICE_HISTORY = "https://api.tdameritrade.com/v1/marketdata/"
