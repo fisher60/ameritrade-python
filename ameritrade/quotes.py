@@ -1,19 +1,10 @@
 from aiohttp import ClientSession
-from aiohttp.web import HTTPException
 
 from dataclasses import dataclass
-from dataclass_factory import Factory, Schema, NameStyle
 
 from .auth import Auth
 from .settings import GET_QUOTES_URL, GET_QUOTE_URL
-
-
-async def get_data_response(response):
-    data_response = await response.json()
-    if response.status != 200:
-        raise HTTPException(reason=data_response["error"])
-
-    return data_response
+from .utils import get_data_response
 
 
 async def get_quotes(*symbols: str, auth_class: Auth) -> dict:
@@ -33,30 +24,6 @@ async def get_quote(symbol: str, auth_class: Auth) -> dict:
     async with ClientSession(headers=headers) as session:
         async with session.get(url=url) as response:
             return await get_data_response(response)
-
-
-class Stock:
-    _factory = Factory(default_schema=Schema(name_style=NameStyle.camel_lower))
-
-    def __init__(self, data):
-        clean_data = self.clean_data(data)
-        self.quote: Quote = self._factory.load(clean_data, Quote)
-
-    @staticmethod
-    def clean_data(data) -> dict:
-        data["fiftyTwoWeekHigh"] = data["52WkHigh"]
-        data["fiftyTwoWeekLow"] = data["52WkLow"]
-        data["netAssetValue"] = data["nAV"]
-        return data
-
-    def __str__(self) -> str:
-        return self.quote.symbol
-
-    def __float__(self) -> float:
-        return float(self.quote.bid_price)
-
-    def __int__(self) -> int:
-        return int(self.quote.bid_price)
 
 
 @dataclass

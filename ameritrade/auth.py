@@ -1,10 +1,10 @@
 from aiohttp import ClientSession
-from aiohttp.web import HTTPException
 
 from urllib.parse import unquote, urlencode, urlparse
 from typing import Optional, Tuple
 
 from .settings import AUTH_URL, OAUTH_URL
+from .utils import get_data_response
 
 
 class Token:
@@ -81,10 +81,7 @@ class Auth:
         """Sends the request for authentication given either the authorization code or a refresh token in data."""
         async with ClientSession() as session:
             async with session.post(OAUTH_URL, data=data) as response:
-                data_response = await response.json()
-                if response.status != 200:
-                    print(data["grant_type"])
-                    raise HTTPException(reason=data_response["error"])
+                data_response = await get_data_response(response)
 
         self.access_token = Token(
             data_response.get("access_token"),
