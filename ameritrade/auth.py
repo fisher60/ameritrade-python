@@ -34,7 +34,7 @@ class Auth:
             "redirect_uri": self.redirect_uri,
             "client_id": f"{self.consumer_key}@AMER.OAUTHAP",
             "response_type": "code"
-            }
+        }
         return f"{AUTH_URL}?{urlencode(params)}"
 
     @staticmethod
