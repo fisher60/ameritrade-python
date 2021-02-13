@@ -12,6 +12,7 @@ dataclass-factory = "^2.10"
 
 [tool.poetry.dev-dependencies]
 python-dotenv = "^0.15.0"
+poetry = "^1.1.4"
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]
