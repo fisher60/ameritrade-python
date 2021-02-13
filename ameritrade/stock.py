@@ -1,14 +1,33 @@
 from dataclass_factory import Factory, Schema, NameStyle
 
+from typing import Optional
+
+from .history import History
 from .quotes import Quote
+from .auth import Auth
 
 
 class Stock:
     _factory = Factory(default_schema=Schema(name_style=NameStyle.camel_lower))
 
-    def __init__(self, data):
-        clean_data = self.clean_data(data)
-        self.quote: Quote = self._factory.load(clean_data, Quote)
+    def __init__(
+            self,
+            auth_class: Auth,
+            symbol: Optional[str] = None,
+            data: Optional[dict] = None,
+            history: Optional[History] = None
+    ):
+        if data:
+            clean_data = self.clean_data(data)
+            self.quote: Quote = self._factory.load(clean_data, Quote)
+            self.symbol: str = self.quote.symbol
+        else:
+            self.symbol: str = symbol
+
+        if history:
+            self.history: History = history
+        else:
+            self.history: History = History(self.symbol, auth_class)
 
     @staticmethod
     def clean_data(data) -> dict:
