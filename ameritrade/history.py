@@ -27,7 +27,7 @@ class History:
         self.symbol = symbol
         self.auth_class = auth_class
 
-        if candles:
+        if candles is not None:
             self.candles = candles
             self.data = self.load_history(candles)
         else:
@@ -69,17 +69,17 @@ class History:
         headers = {"Authorization": f"Bearer {self.auth_class.access_token.token}"}
         params = {}
 
-        if period:
+        if period is not None:
             params["period"] = period
-        if frequency:
+        if frequency is not None:
             params["frequency"] = frequency
-        if period_type:
+        if period_type is not None:
             params["periodType"] = period_type
-        if frequency_type:
+        if frequency_type is not None:
             params["frequencyType"] = frequency_type
-        if end_date:
+        if end_date is not None:
             params["endDate"] = end_date
-        if start_date:
+        if start_date is not None:
             params["startDate"] = start_date
 
         async with ClientSession(headers=headers) as session:
