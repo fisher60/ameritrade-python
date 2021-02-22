@@ -24,7 +24,7 @@ class History:
     _factory = Factory()
 
     def __init__(self, symbol: str, auth_class: Auth, candles: Optional[List[dict]] = None) -> None:
-        self.symbol = symbol
+        self.symbol = symbol.upper()
         self.auth_class = auth_class
 
         if candles is not None:
