@@ -28,8 +28,8 @@ loop = asyncio.get_event_loop()  # Creates the event loop
 loop.run_until_complete(main())  # Runs the event loop
 ```
 
-### Environ
-I suggest utilizing a .env file. \
+## Environment
+I suggest utilizing a .env file to store private/sensitive information.  
 If you are not providing a refresh token, it is recommended that you use auth.Auth.manual_auth() in order to use
 Ameritrade's front end auth tools, you can follow the on-screen instructions for this.
 
@@ -37,3 +37,9 @@ You may choose to save your refresh token in a secure location/format, if using 
 need to provide these to your auth class:
 - consumer_key
 - refresh_token
+
+## Developemnt
+Install dependencies with poetry `poetry install`.  
+
+### Building Locally
+`poetry build`
