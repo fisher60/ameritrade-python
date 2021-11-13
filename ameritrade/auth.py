@@ -46,6 +46,8 @@ class Auth:
 
     async def refresh_token_auth(self) -> Tuple[Token, Token]:
         """Authenticates using an existing refresh token."""
+        if self.refresh_token is None:
+            raise AttributeError("Refresh token is not set.")
         data = {
             "grant_type": "refresh_token",
             "refresh_token": self.refresh_token,
@@ -67,7 +69,6 @@ class Auth:
 
     async def get_tokens_from_refresh(self, old_refresh_token: Optional[str]) -> Tuple[Token, Token]:
         """Gets new refresh and access tokens from an existing refresh token."""
-
         data = {
             "grant_type": "refresh_token",
             "refresh_token": old_refresh_token,

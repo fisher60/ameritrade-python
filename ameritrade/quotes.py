@@ -85,11 +85,7 @@ class Quote:
             self.symbol: str = symbol.upper()
 
     async def get_quote(self, symbol: Optional[str] = None, auth_class: Optional[Auth] = None) -> QuoteData:
-        """
-        :param symbol: The stock symbol, will default to self.symbol if arg not passed.
-        :param auth_class: The authorization class for the request, will default to self.auth_class if arg not passed.
-        :return: QuoteData dataclass
-        """
+        """Get a single quote for the given stock and return the parsed quote data."""
         symbol = symbol.upper() if symbol else self.symbol
         auth_class = auth_class if auth_class else self.auth_class
 
