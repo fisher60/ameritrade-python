@@ -4,6 +4,9 @@ version = "0.1.0"
 description = "A python wrapper for the Ameritrade API."
 authors = ["Kyler Roloff"]
 license = "MIT"
+packages = [
+    { include = "ameritrade" },
+]
 
 [tool.poetry.dependencies]
 python = "^3.8"
