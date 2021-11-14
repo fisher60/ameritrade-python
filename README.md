@@ -3,6 +3,24 @@ This is a simple and lightweight async api wrapper for Ameritrade's API.
 
 The official docs for the Ameritrade API can be found [here](https://developer.tdameritrade.com/apis).
 
+The first time authentication will require utilizing the callback URL/redirect URI to obtain your tokens.
+This package will generate an auth url to enter into a web browser, you can then paste the resulting url from the
+redirect url in order to obtain a pair of tokens.
+
+```python
+from os import environ
+from ameritrade import auth
+
+test_redirect_uri = environ.get("callback_url")
+consumer_key = environ.get("consumer_key")
+
+test_auth = auth.Auth(redirect_uri=test_redirect_uri, consumer_key=consumer_key)
+
+def main():
+    """Sets the access and refresh tokens by following terminal prompts."""
+    await test_auth.manual_auth()
+```
+
 Simple usage using an existing refresh token:
 ```python
 import asyncio
