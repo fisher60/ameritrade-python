@@ -16,7 +16,7 @@ consumer_key = environ.get("consumer_key")
 
 test_auth = auth.Auth(redirect_uri=test_redirect_uri, consumer_key=consumer_key)
 
-def main():
+async def main():
     """Sets the access and refresh tokens by following terminal prompts."""
     await test_auth.manual_auth()
 ```
